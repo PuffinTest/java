@@ -25,6 +25,7 @@ int status = runTests(List.of(
     test("greets the user", () -> {
         expectEqual("HELLO", "hello".toUpperCase());
         expectLength(List.of("north", "south"), 2);
+        expectStartsWith("puffin test", "puffin");
     })
 ));
 System.exit(status);
