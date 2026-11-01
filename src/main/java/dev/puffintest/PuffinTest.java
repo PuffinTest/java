@@ -64,6 +64,44 @@ public final class PuffinTest {
         if (actual) throw new ExpectationFailure("Expected false", false, true, true);
     }
 
+    /** Fail unless the given iterable, map, string, or array contains the item. */
+    public static void expectContains(Object container, Object item) {
+        boolean contains;
+        if (container instanceof Iterable<?> values) {
+            contains = false;
+            for (Object value : values) if (Objects.deepEquals(value, item)) { contains = true; break; }
+        } else if (container instanceof java.util.Map<?, ?> values) {
+            contains = values.containsKey(item);
+        } else if (container instanceof CharSequence text) {
+            contains = item instanceof CharSequence needle && text.toString().contains(needle);
+        } else if (container != null && container.getClass().isArray()) {
+            contains = false;
+            for (int index = 0; index < Array.getLength(container); index++) {
+                if (Objects.deepEquals(Array.get(container, index), item)) { contains = true; break; }
+            }
+        } else {
+            throw new IllegalArgumentException("container must be an iterable, map, string, or array");
+        }
+        if (!contains) {
+            throw new ExpectationFailure("Item is not present in the container", "a container containing " + display(item), container, true);
+        }
+    }
+
+    /** Require a callback to throw an exception of the requested type. */
+    public static <T extends Throwable> T expectThrows(Class<T> expected, CheckedRunnable body) throws Exception {
+        Objects.requireNonNull(expected, "expected");
+        try {
+            body.run();
+        } catch (Throwable error) {
+            if (error instanceof VirtualMachineError fatal) throw fatal;
+            if (error instanceof ThreadDeath fatal) throw fatal;
+            if (error instanceof LinkageError fatal) throw fatal;
+            if (expected.isInstance(error)) return expected.cast(error);
+            throw new ExpectationFailure("Expected " + expected.getSimpleName() + ", got " + error.getClass().getSimpleName(), expected.getSimpleName(), error.getClass().getSimpleName(), true);
+        }
+        throw new ExpectationFailure("Expected " + expected.getSimpleName() + " to be thrown", expected.getSimpleName(), "no exception", true);
+    }
+
     /** Explicitly fail the current case. */
     public static void fail(String message) {
         throw new ExpectationFailure(message, null, null, false);
