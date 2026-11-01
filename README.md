@@ -25,6 +25,7 @@ int status = runTests(List.of(
     test("greets the user", () -> {
         expectEqual("HELLO", "hello".toUpperCase());
         expectLength(List.of("north", "south"), 2);
+        expectLengthBetween(List.of("north", "south"), 1, 3);
         expectStartsWith("puffin test", "puffin");
         expectNotEndsWith("puffin test", "bird");
         expectBetween(18, 13, 19);
@@ -34,6 +35,8 @@ System.exit(status);
 ```
 
 Each case runs independently. Failures show the case name, message, expected and actual values when available, and the first stack location outside PuffinTest. The runner returns `1` when a case fails or when no cases are provided.
+
+`expectLengthBetween(actual, minimum, maximum)` checks an inclusive range for arrays, collections, maps, and strings. The bounds must be nonnegative and ordered.
 
 Use `test(name, tags, skipReason, body)` for tags or skips. `runTests(cases, new PuffinTest.RunOptions(filter, tag, failFast, beforeEach, afterEach))` applies optional name and tag filters, per-case hooks, and fail-fast behavior. Pass `null` for unused text filters or hooks; use `PuffinTest.RunOptions.defaults()` for the default behavior.
 

@@ -125,6 +125,17 @@ public final class PuffinTest {
         if (actualLength != expected) throw new ExpectationFailure("Value has an unexpected length", expected, actualLength, true);
     }
 
+    /** Fail unless actual has a length in the inclusive range. */
+    public static void expectLengthBetween(Object actual, int minimum, int maximum) {
+        if (minimum < 0 || maximum < 0 || minimum > maximum) {
+            throw new IllegalArgumentException("length bounds must be nonnegative and ordered");
+        }
+        int actualLength = lengthOf(actual);
+        if (actualLength < minimum || actualLength > maximum) {
+            throw new ExpectationFailure("Value length is outside the expected range", "length between " + minimum + " and " + maximum + ", inclusive", actualLength, true);
+        }
+    }
+
     /** Fail unless actual has no items, characters, or entries. */
     public static void expectEmpty(Object actual) {
         expectLength(actual, 0);
