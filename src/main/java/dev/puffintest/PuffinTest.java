@@ -70,6 +70,17 @@ public final class PuffinTest {
         }
     }
 
+    /** Fail unless two finite numbers are close within relative or absolute tolerance. */
+    public static void expectClose(double actual, double expected, double relTolerance, double absTolerance) {
+        if (Double.isNaN(relTolerance) || Double.isNaN(absTolerance) || relTolerance < 0 || absTolerance < 0 ||
+                Double.isInfinite(relTolerance) || Double.isInfinite(absTolerance)) {
+            throw new IllegalArgumentException("tolerances must be finite and nonnegative");
+        }
+        boolean close = actual == expected || (Double.isFinite(actual) && Double.isFinite(expected) &&
+                Math.abs(actual - expected) <= Math.max(relTolerance * Math.max(Math.abs(actual), Math.abs(expected)), absTolerance));
+        if (!close) throw new ExpectationFailure("Values are not close", expected, actual, true);
+    }
+
     /** Fail unless actual is true. */
     public static void expectTrue(boolean actual) {
         if (!actual) throw new ExpectationFailure("Expected true", true, false, true);
