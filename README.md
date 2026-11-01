@@ -2,6 +2,8 @@
 
 PuffinTest is an early Java library for named test cases and readable expectation failures. It provides equality and inequality checks, truth and falsehood checks, membership checks for iterables, maps, strings, and arrays, typed exception checks, explicit failure, tags, skips, name and tag filters, per-case hooks, fail-fast mode, independent sequential execution, and a `0` or `1` process status from the runner.
 
+Use `expectClose(actual, expected, relTolerance, absTolerance)` for approximate numeric checks.
+
 The package is under development and has not been published to Maven Central. It requires Java 17 or newer and uses Maven for compilation.
 
 ## Run the example

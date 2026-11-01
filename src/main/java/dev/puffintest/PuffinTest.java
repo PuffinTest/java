@@ -76,8 +76,10 @@ public final class PuffinTest {
                 Double.isInfinite(relTolerance) || Double.isInfinite(absTolerance)) {
             throw new IllegalArgumentException("tolerances must be finite and nonnegative");
         }
+        double difference = Math.abs(actual - expected);
+        double scale = Math.max(Math.abs(actual), Math.abs(expected));
         boolean close = actual == expected || (Double.isFinite(actual) && Double.isFinite(expected) &&
-                Math.abs(actual - expected) <= Math.max(relTolerance * Math.max(Math.abs(actual), Math.abs(expected)), absTolerance));
+                (difference <= absTolerance || (scale != 0 && difference / scale <= relTolerance)));
         if (!close) throw new ExpectationFailure("Values are not close", expected, actual, true);
     }
 
