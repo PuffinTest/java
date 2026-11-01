@@ -3,6 +3,7 @@ package dev.puffintest;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -105,6 +106,32 @@ public final class PuffinTest {
         if (containsValue(container, item)) {
             throw new ExpectationFailure("Item is unexpectedly present in the container", "a container not containing " + display(item), container, true);
         }
+    }
+
+    /** Fail unless actual has exactly the expected number of items, characters, or entries. */
+    public static void expectLength(Object actual, int expected) {
+        if (expected < 0) throw new IllegalArgumentException("expected length must be nonnegative");
+        int actualLength = lengthOf(actual);
+        if (actualLength != expected) throw new ExpectationFailure("Value has an unexpected length", expected, actualLength, true);
+    }
+
+    /** Fail unless actual has no items, characters, or entries. */
+    public static void expectEmpty(Object actual) {
+        expectLength(actual, 0);
+    }
+
+    /** Fail unless actual contains at least one item, character, or entry. */
+    public static void expectNotEmpty(Object actual) {
+        int actualLength = lengthOf(actual);
+        if (actualLength == 0) throw new ExpectationFailure("Expected a non-empty value", "at least 1 item", 0, true);
+    }
+
+    private static int lengthOf(Object value) {
+        if (value instanceof CharSequence text) return text.length();
+        if (value instanceof Collection<?> collection) return collection.size();
+        if (value instanceof java.util.Map<?, ?> map) return map.size();
+        if (value != null && value.getClass().isArray()) return Array.getLength(value);
+        throw new IllegalArgumentException("value must be a collection, map, string, or array");
     }
 
     private static boolean containsValue(Object container, Object item) {
