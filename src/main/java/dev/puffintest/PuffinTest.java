@@ -84,6 +84,16 @@ public final class PuffinTest {
         if (!close) throw new ExpectationFailure("Values are not close", expected, actual, true);
     }
 
+    /** Fail unless actual is between minimum and maximum, inclusive. */
+    public static void expectBetween(double actual, double minimum, double maximum) {
+        if (Double.isNaN(minimum) || Double.isNaN(maximum) || minimum > maximum) {
+            throw new IllegalArgumentException("minimum must be less than or equal to maximum");
+        }
+        if (!(actual >= minimum && actual <= maximum)) {
+            throw new ExpectationFailure("Value is outside the expected range", "between " + minimum + " and " + maximum + ", inclusive", actual, true);
+        }
+    }
+
     /** Fail unless actual is true. */
     public static void expectTrue(boolean actual) {
         if (!actual) throw new ExpectationFailure("Expected true", true, false, true);
