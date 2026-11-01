@@ -104,6 +104,16 @@ public final class PuffinTest {
         if (actual) throw new ExpectationFailure("Expected false", false, true, true);
     }
 
+    /** Fail unless actual is null. */
+    public static void expectNull(Object actual) {
+        if (actual != null) throw new ExpectationFailure("Expected null", null, actual, true);
+    }
+
+    /** Fail unless actual is non-null. */
+    public static void expectNotNull(Object actual) {
+        if (actual == null) throw new ExpectationFailure("Expected a non-null value", "non-null", null, true);
+    }
+
     /** Fail unless the given iterable, map, string, or array contains the item. */
     public static void expectContains(Object container, Object item) {
         if (!containsValue(container, item)) {

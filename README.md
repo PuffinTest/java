@@ -28,6 +28,8 @@ int status = runTests(List.of(
         expectLengthBetween(List.of("north", "south"), 1, 3);
         expectStartsWith("puffin test", "puffin");
         expectNotEndsWith("puffin test", "bird");
+        expectNull(null);
+        expectNotNull("puffin");
         expectBetween(18, 13, 19);
     })
 ));
