@@ -27,6 +27,8 @@ int status = runTests(List.of(
         expectLength(List.of("north", "south"), 2);
         expectLengthBetween(List.of("north", "south"), 1, 3);
         expectStartsWith("puffin test", "puffin");
+        expectContains("puffin test", "test");
+        expectNotContains("puffin test", "penguin");
         expectNotEndsWith("puffin test", "bird");
         expectNull(null);
         expectNotNull("puffin");
