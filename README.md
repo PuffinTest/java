@@ -26,6 +26,7 @@ int status = runTests(List.of(
         expectEqual("HELLO", "hello".toUpperCase());
         expectLength(List.of("north", "south"), 2);
         expectStartsWith("puffin test", "puffin");
+        expectNotEndsWith("puffin test", "bird");
         expectBetween(18, 13, 19);
     })
 ));

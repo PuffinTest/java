@@ -154,6 +154,24 @@ public final class PuffinTest {
         }
     }
 
+    /** Fail if actual starts with the given prefix. */
+    public static void expectNotStartsWith(CharSequence actual, CharSequence prefix) {
+        Objects.requireNonNull(actual, "actual");
+        Objects.requireNonNull(prefix, "prefix");
+        if (actual.toString().startsWith(prefix.toString())) {
+            throw new ExpectationFailure("Text unexpectedly starts with the prefix", "text not starting with " + display(prefix), actual, true);
+        }
+    }
+
+    /** Fail if actual ends with the given suffix. */
+    public static void expectNotEndsWith(CharSequence actual, CharSequence suffix) {
+        Objects.requireNonNull(actual, "actual");
+        Objects.requireNonNull(suffix, "suffix");
+        if (actual.toString().endsWith(suffix.toString())) {
+            throw new ExpectationFailure("Text unexpectedly ends with the suffix", "text not ending with " + display(suffix), actual, true);
+        }
+    }
+
     private static int lengthOf(Object value) {
         if (value instanceof CharSequence text) return text.length();
         if (value instanceof Collection<?> collection) return collection.size();
