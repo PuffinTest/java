@@ -4,7 +4,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 /** Small named test cases and readable expectation failures. */
 public final class PuffinTest {
@@ -15,11 +17,20 @@ public final class PuffinTest {
         void run() throws Exception;
     }
 
-    public record TestCase(String name, CheckedRunnable body) {
+    public record TestCase(String name, CheckedRunnable body, Set<String> tags, String skipReason) {
         public TestCase {
             if (name == null || name.isBlank()) throw new IllegalArgumentException("test name must not be blank");
             Objects.requireNonNull(body, "test body");
+            tags = Set.copyOf(Objects.requireNonNull(tags, "tags"));
+            if (tags.stream().anyMatch(tag -> tag == null || tag.isBlank())) throw new IllegalArgumentException("tags must be nonempty");
+            if (skipReason != null && skipReason.isBlank()) throw new IllegalArgumentException("skipReason must not be blank");
         }
+
+        public TestCase(String name, CheckedRunnable body) { this(name, body, Set.of(), null); }
+    }
+
+    public record RunOptions(String filter, String tag, boolean failFast, CheckedRunnable beforeEach, CheckedRunnable afterEach) {
+        public static RunOptions defaults() { return new RunOptions(null, null, false, null, null); }
     }
 
     private static final class ExpectationFailure extends AssertionError {
@@ -38,6 +49,11 @@ public final class PuffinTest {
     /** Declare a named test case. */
     public static TestCase test(String name, CheckedRunnable body) {
         return new TestCase(name, body);
+    }
+
+    /** Declare a tagged or skipped case. */
+    public static TestCase test(String name, Set<String> tags, String skipReason, CheckedRunnable body) {
+        return new TestCase(name, body, tags, skipReason);
     }
 
     /** Fail unless actual and expected are equal, including nested arrays. */
@@ -109,26 +125,68 @@ public final class PuffinTest {
 
     /** Run cases in order, continue after each failure, and return 0 or 1. */
     public static int runTests(List<TestCase> cases) {
+        return runTests(cases, RunOptions.defaults());
+    }
+
+    /** Run matching cases with optional hooks and fail-fast behavior. */
+    public static int runTests(List<TestCase> cases, RunOptions options) {
         Objects.requireNonNull(cases, "cases");
+        Objects.requireNonNull(options, "options");
+        List<TestCase> selected = cases.stream().filter(testCase ->
+                (options.filter() == null || testCase.name().toLowerCase(Locale.ROOT).contains(options.filter().toLowerCase(Locale.ROOT))) &&
+                (options.tag() == null || testCase.tags().stream().anyMatch(value -> value.equalsIgnoreCase(options.tag())))
+        ).toList();
         int passed = 0;
         int failed = 0;
-        for (TestCase testCase : cases) {
+        int skipped = 0;
+        int processed = 0;
+        for (TestCase testCase : selected) {
+            processed++;
+            if (testCase.skipReason() != null) {
+                System.out.println("SKIP  " + testCase.name() + " (" + testCase.skipReason() + ")");
+                skipped++;
+                continue;
+            }
+            boolean setupSucceeded = false;
+            String phase = "beforeEach";
+            boolean caseFailed = false;
             try {
+                if (options.beforeEach() != null) options.beforeEach().run();
+                setupSucceeded = true;
+                phase = "test";
                 testCase.body().run();
+                phase = "afterEach";
+                if (options.afterEach() != null) options.afterEach().run();
                 System.out.println("PASS  " + testCase.name());
                 passed++;
             } catch (Exception | AssertionError error) {
                 failed++;
-                printFailure(testCase, error);
+                caseFailed = true;
+                printFailure(testCase, error, phase);
             }
+            if (setupSucceeded && !phase.equals("afterEach") && options.afterEach() != null && caseFailed) {
+                try {
+                    options.afterEach().run();
+                } catch (Exception | AssertionError error) {
+                    failed++;
+                    printFailure(testCase, error, "afterEach");
+                }
+            }
+            if (caseFailed && options.failFast()) break;
         }
-        System.out.printf("%n%d processed: %d passed, %d failed%n", cases.size(), passed, failed);
-        if (cases.isEmpty()) System.out.println("No test cases were found");
-        return failed == 0 && !cases.isEmpty() ? 0 : 1;
+        System.out.printf("%n%d processed: %d passed, %d failed, %d skipped%n", processed, passed, failed, skipped);
+        if (selected.isEmpty()) {
+            if (options.filter() != null && options.tag() != null) System.out.printf("No test cases matched name '%s' and tag '%s'%n", options.filter(), options.tag());
+            else if (options.filter() != null) System.out.println("No test cases matched name '" + options.filter() + "'");
+            else if (options.tag() != null) System.out.println("No test cases matched tag '" + options.tag() + "'");
+            else System.out.println("No test cases were found");
+            return 1;
+        }
+        return failed == 0 ? 0 : 1;
     }
 
-    private static void printFailure(TestCase testCase, Throwable error) {
-        System.out.println("FAIL  " + testCase.name());
+    private static void printFailure(TestCase testCase, Throwable error, String phase) {
+        System.out.println("FAIL  " + testCase.name() + (phase.equals("test") ? "" : " (" + phase + ")"));
         System.out.println("      " + error.getClass().getSimpleName() + ": " + error.getMessage());
         if (error instanceof ExpectationFailure failure && failure.hasValues) {
             System.out.println("      Expected: " + display(failure.expected));

@@ -1,6 +1,6 @@
 # PuffinTest for Java
 
-PuffinTest is an early Java library for named test cases and readable expectation failures. This first slice provides equality and inequality checks, truth and falsehood checks, membership checks for iterables, maps, strings, and arrays, typed exception checks, explicit failure, independent sequential execution, and a `0` or `1` process status from the runner.
+PuffinTest is an early Java library for named test cases and readable expectation failures. It provides equality and inequality checks, truth and falsehood checks, membership checks for iterables, maps, strings, and arrays, typed exception checks, explicit failure, tags, skips, name and tag filters, per-case hooks, fail-fast mode, independent sequential execution, and a `0` or `1` process status from the runner.
 
 The package is under development and has not been published to Maven Central. It requires Java 17 or newer and uses Maven for compilation.
 
@@ -26,5 +26,7 @@ System.exit(status);
 ```
 
 Each case runs independently. Failures show the case name, message, expected and actual values when available, and the first stack location outside PuffinTest. The runner returns `1` when a case fails or when no cases are provided.
+
+Use `test(name, tags, skipReason, body)` for tags or skips. `runTests(cases, new PuffinTest.RunOptions(filter, tag, failFast, beforeEach, afterEach))` applies optional name and tag filters, per-case hooks, and fail-fast behavior. Pass `null` for unused text filters or hooks; use `PuffinTest.RunOptions.defaults()` for the default behavior.
 
 This initial Java implementation has not yet been verified. It does not yet include discovery, filtering, skips, tags, fixtures, or a dedicated test suite.
