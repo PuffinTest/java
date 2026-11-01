@@ -47,6 +47,13 @@ public final class PuffinTest {
         }
     }
 
+    /** Fail unless actual and unexpected differ, including nested arrays. */
+    public static void expectNotEqual(Object actual, Object unexpected) {
+        if (Objects.deepEquals(actual, unexpected)) {
+            throw new ExpectationFailure("Values are unexpectedly equal", "a value different from " + display(unexpected), actual, true);
+        }
+    }
+
     /** Fail unless actual is true. */
     public static void expectTrue(boolean actual) {
         if (!actual) throw new ExpectationFailure("Expected true", true, false, true);
