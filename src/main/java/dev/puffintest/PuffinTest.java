@@ -118,6 +118,16 @@ public final class PuffinTest {
         if (Double.isNaN(actual)) throw new ExpectationFailure("Value is unexpectedly NaN", "not NaN", actual, true);
     }
 
+    /** Fail unless actual is positive or negative infinity. */
+    public static void expectInfinite(double actual) {
+        if (!Double.isInfinite(actual)) throw new ExpectationFailure("Value is not infinite", "positive or negative infinity", actual, true);
+    }
+
+    /** Fail if actual is positive or negative infinity. */
+    public static void expectNotInfinite(double actual) {
+        if (Double.isInfinite(actual)) throw new ExpectationFailure("Value is unexpectedly infinite", "not infinity", actual, true);
+    }
+
     /** Fail unless actual is between minimum and maximum, inclusive. */
     public static void expectBetween(double actual, double minimum, double maximum) {
         if (Double.isNaN(minimum) || Double.isNaN(maximum) || minimum > maximum) {

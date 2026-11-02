@@ -33,6 +33,8 @@ public final class BasicExample {
                     PuffinTest.expectFinite(3.14);
                     PuffinTest.expectNaN(Double.NaN);
                     PuffinTest.expectNotNaN(3.14);
+                    PuffinTest.expectInfinite(Double.POSITIVE_INFINITY);
+                    PuffinTest.expectNotInfinite(3.14);
                 })
         ));
         System.exit(status);
