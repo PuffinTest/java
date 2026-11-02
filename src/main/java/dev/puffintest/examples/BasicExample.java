@@ -31,6 +31,8 @@ public final class BasicExample {
                     expectNotBetween(4, 1, 3);
                     expectNotClose(0.1, 0.9, 1e-9, 0.0);
                     PuffinTest.expectFinite(3.14);
+                    PuffinTest.expectNaN(Double.NaN);
+                    PuffinTest.expectNotNaN(3.14);
                 })
         ));
         System.exit(status);
