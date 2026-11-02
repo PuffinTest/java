@@ -95,6 +95,16 @@ public final class PuffinTest {
         }
     }
 
+    /** Fail if actual is within the inclusive range. */
+    public static void expectNotBetween(double actual, double minimum, double maximum) {
+        if (Double.isNaN(minimum) || Double.isNaN(maximum) || minimum > maximum) {
+            throw new IllegalArgumentException("minimum must be less than or equal to maximum");
+        }
+        if (!(actual < minimum || actual > maximum)) {
+            throw new ExpectationFailure("Value is inside the unexpected range", "outside [" + minimum + ", " + maximum + "]", actual, true);
+        }
+    }
+
     /** Fail unless actual is strictly greater than threshold. */
     public static void expectGreaterThan(double actual, double threshold) {
         if (!(actual > threshold)) throw new ExpectationFailure("Value is not greater than the threshold", "greater than " + threshold, actual, true);

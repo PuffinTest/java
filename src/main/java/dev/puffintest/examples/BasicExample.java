@@ -11,6 +11,7 @@ import static dev.puffintest.PuffinTest.expectGreaterThan;
 import static dev.puffintest.PuffinTest.expectLessThan;
 import static dev.puffintest.PuffinTest.expectAtLeast;
 import static dev.puffintest.PuffinTest.expectAtMost;
+import static dev.puffintest.PuffinTest.expectNotBetween;
 import static dev.puffintest.PuffinTest.test;
 
 public final class BasicExample {
@@ -27,6 +28,7 @@ public final class BasicExample {
                     expectLessThan(2, 3);
                     expectAtLeast(3, 3);
                     expectAtMost(3, 3);
+                    expectNotBetween(4, 1, 3);
                 })
         ));
         System.exit(status);
