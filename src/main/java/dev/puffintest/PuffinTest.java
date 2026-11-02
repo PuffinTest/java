@@ -95,6 +95,16 @@ public final class PuffinTest {
         }
     }
 
+    /** Fail unless actual is strictly greater than threshold. */
+    public static void expectGreaterThan(double actual, double threshold) {
+        if (!(actual > threshold)) throw new ExpectationFailure("Value is not greater than the threshold", "greater than " + threshold, actual, true);
+    }
+
+    /** Fail unless actual is strictly less than threshold. */
+    public static void expectLessThan(double actual, double threshold) {
+        if (!(actual < threshold)) throw new ExpectationFailure("Value is not less than the threshold", "less than " + threshold, actual, true);
+    }
+
     /** Fail unless actual is true. */
     public static void expectTrue(boolean actual) {
         if (!actual) throw new ExpectationFailure("Expected true", true, false, true);

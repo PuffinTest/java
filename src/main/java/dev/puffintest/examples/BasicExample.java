@@ -7,6 +7,8 @@ import static dev.puffintest.PuffinTest.expectEqual;
 import static dev.puffintest.PuffinTest.expectTrue;
 import static dev.puffintest.PuffinTest.expectMatches;
 import static dev.puffintest.PuffinTest.expectNotMatches;
+import static dev.puffintest.PuffinTest.expectGreaterThan;
+import static dev.puffintest.PuffinTest.expectLessThan;
 import static dev.puffintest.PuffinTest.test;
 
 public final class BasicExample {
@@ -19,6 +21,8 @@ public final class BasicExample {
                     expectTrue(List.of("puffin", "tern").contains("puffin"));
                     expectMatches("order-4821 accepted", "order-\\d+ accepted");
                     expectNotMatches("request failed", "\\b2xx\\b");
+                    expectGreaterThan(5, 3);
+                    expectLessThan(2, 3);
                 })
         ));
         System.exit(status);
