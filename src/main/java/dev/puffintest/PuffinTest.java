@@ -85,6 +85,19 @@ public final class PuffinTest {
         if (!close) throw new ExpectationFailure("Values are not close", expected, actual, true);
     }
 
+    /** Fail if two numbers are close within relative or absolute tolerance. */
+    public static void expectNotClose(double actual, double expected, double relTolerance, double absTolerance) {
+        if (Double.isNaN(relTolerance) || Double.isNaN(absTolerance) || relTolerance < 0 || absTolerance < 0 ||
+                Double.isInfinite(relTolerance) || Double.isInfinite(absTolerance)) {
+            throw new IllegalArgumentException("tolerances must be finite and nonnegative");
+        }
+        double difference = Math.abs(actual - expected);
+        double scale = Math.max(Math.abs(actual), Math.abs(expected));
+        boolean close = actual == expected || (Double.isFinite(actual) && Double.isFinite(expected) &&
+                (difference <= absTolerance || (scale != 0 && difference / scale <= relTolerance)));
+        if (close) throw new ExpectationFailure("Values are unexpectedly close", "not close to " + expected, actual, true);
+    }
+
     /** Fail unless actual is between minimum and maximum, inclusive. */
     public static void expectBetween(double actual, double minimum, double maximum) {
         if (Double.isNaN(minimum) || Double.isNaN(maximum) || minimum > maximum) {

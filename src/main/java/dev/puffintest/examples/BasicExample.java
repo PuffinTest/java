@@ -29,6 +29,7 @@ public final class BasicExample {
                     expectAtLeast(3, 3);
                     expectAtMost(3, 3);
                     expectNotBetween(4, 1, 3);
+                    expectNotClose(0.1, 0.9, 1e-9, 0.0);
                 })
         ));
         System.exit(status);

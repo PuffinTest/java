@@ -46,7 +46,7 @@ System.exit(status);
 
 Each case runs independently. Failures show the case name, message, expected and actual values when available, and the first stack location outside PuffinTest. The runner returns `1` when a case fails or when no cases are provided.
 
-`expectNotBetween(actual, minimum, maximum)` fails for values in the inclusive range. `expectGreaterThan` and `expectLessThan` use strict comparisons; `expectAtLeast` and `expectAtMost` accept equality at the threshold.
+`expectNotBetween(actual, minimum, maximum)` fails for values in the inclusive range. `expectNotClose(actual, expected, relTolerance, absTolerance)` fails when the values satisfy `expectClose`'s tolerance rule. `expectGreaterThan` and `expectLessThan` use strict comparisons; `expectAtLeast` and `expectAtMost` accept equality at the threshold.
 
 `expectMatches(actual, regex)` and `expectNotMatches(actual, regex)` search for a regex match anywhere in the text using Java regular-expression syntax.
 
