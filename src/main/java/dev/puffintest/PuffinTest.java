@@ -98,6 +98,16 @@ public final class PuffinTest {
         if (close) throw new ExpectationFailure("Values are unexpectedly close", "not close to " + expected, actual, true);
     }
 
+    /** Fail unless actual is finite (neither NaN nor infinity). */
+    public static void expectFinite(double actual) {
+        if (!Double.isFinite(actual)) throw new ExpectationFailure("Value is not finite", "a finite number", actual, true);
+    }
+
+    /** Fail unless actual is NaN or positive or negative infinity. */
+    public static void expectNotFinite(double actual) {
+        if (Double.isFinite(actual)) throw new ExpectationFailure("Value is unexpectedly finite", "NaN or infinity", actual, true);
+    }
+
     /** Fail unless actual is between minimum and maximum, inclusive. */
     public static void expectBetween(double actual, double minimum, double maximum) {
         if (Double.isNaN(minimum) || Double.isNaN(maximum) || minimum > maximum) {
