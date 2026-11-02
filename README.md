@@ -30,6 +30,8 @@ int status = runTests(List.of(
         expectContains("puffin test", "test");
         expectNotContains("puffin test", "penguin");
         expectNotEndsWith("puffin test", "bird");
+        IllegalArgumentException parseError = expectThrows(IllegalArgumentException.class, () -> Integer.parseInt("bad"));
+        expectErrorMessage(parseError, "bad");
         expectNull(null);
         expectNotNull("puffin");
         expectEmpty(List.of());
@@ -41,6 +43,8 @@ System.exit(status);
 ```
 
 Each case runs independently. Failures show the case name, message, expected and actual values when available, and the first stack location outside PuffinTest. The runner returns `1` when a case fails or when no cases are provided.
+
+`expectErrorMessage(error, substring)` checks whether `Throwable.getMessage()` contains text; an exception with a null message is treated as having an empty message.
 
 `expectLengthBetween(actual, minimum, maximum)` checks an inclusive range for arrays, collections, maps, and strings. `expectEmpty` and `expectNotEmpty` use the same supported values. The bounds must be nonnegative and ordered.
 

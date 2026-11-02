@@ -232,6 +232,16 @@ public final class PuffinTest {
         throw new ExpectationFailure("Expected " + expected.getSimpleName() + " to be thrown", expected.getSimpleName(), "no exception", true);
     }
 
+    /** Fail unless substring occurs in error.getMessage(). */
+    public static void expectErrorMessage(Throwable error, String substring) {
+        Objects.requireNonNull(error, "error");
+        Objects.requireNonNull(substring, "substring");
+        String actual = error.getMessage() == null ? "" : error.getMessage();
+        if (!actual.contains(substring)) {
+            throw new ExpectationFailure("Error message does not contain the expected text", "error message containing " + display(substring), actual, true);
+        }
+    }
+
     /** Explicitly fail the current case. */
     public static void fail(String message) {
         throw new ExpectationFailure(message, null, null, false);
