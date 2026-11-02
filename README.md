@@ -46,7 +46,7 @@ System.exit(status);
 
 Each case runs independently. Failures show the case name, message, expected and actual values when available, and the first stack location outside PuffinTest. The runner returns `1` when a case fails or when no cases are provided.
 
-`expectGreaterThan(actual, threshold)` and `expectLessThan(actual, threshold)` use strict comparisons.
+`expectGreaterThan` and `expectLessThan` use strict comparisons; `expectAtLeast` and `expectAtMost` accept equality at the threshold.
 
 `expectMatches(actual, regex)` and `expectNotMatches(actual, regex)` search for a regex match anywhere in the text using Java regular-expression syntax.
 

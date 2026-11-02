@@ -105,6 +105,16 @@ public final class PuffinTest {
         if (!(actual < threshold)) throw new ExpectationFailure("Value is not less than the threshold", "less than " + threshold, actual, true);
     }
 
+    /** Fail unless actual is greater than or equal to threshold. */
+    public static void expectAtLeast(double actual, double threshold) {
+        if (!(actual >= threshold)) throw new ExpectationFailure("Value is below the minimum threshold", "at least " + threshold, actual, true);
+    }
+
+    /** Fail unless actual is less than or equal to threshold. */
+    public static void expectAtMost(double actual, double threshold) {
+        if (!(actual <= threshold)) throw new ExpectationFailure("Value is above the maximum threshold", "at most " + threshold, actual, true);
+    }
+
     /** Fail unless actual is true. */
     public static void expectTrue(boolean actual) {
         if (!actual) throw new ExpectationFailure("Expected true", true, false, true);

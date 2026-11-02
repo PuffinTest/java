@@ -9,6 +9,8 @@ import static dev.puffintest.PuffinTest.expectMatches;
 import static dev.puffintest.PuffinTest.expectNotMatches;
 import static dev.puffintest.PuffinTest.expectGreaterThan;
 import static dev.puffintest.PuffinTest.expectLessThan;
+import static dev.puffintest.PuffinTest.expectAtLeast;
+import static dev.puffintest.PuffinTest.expectAtMost;
 import static dev.puffintest.PuffinTest.test;
 
 public final class BasicExample {
@@ -23,6 +25,8 @@ public final class BasicExample {
                     expectNotMatches("request failed", "\\b2xx\\b");
                     expectGreaterThan(5, 3);
                     expectLessThan(2, 3);
+                    expectAtLeast(3, 3);
+                    expectAtMost(3, 3);
                 })
         ));
         System.exit(status);
