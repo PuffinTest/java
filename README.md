@@ -32,6 +32,8 @@ int status = runTests(List.of(
         expectNotEndsWith("puffin test", "bird");
         IllegalArgumentException parseError = expectThrows(IllegalArgumentException.class, () -> Integer.parseInt("bad"));
         expectErrorMessage(parseError, "bad");
+        expectMatches("order-4821 accepted", "order-\\d+ accepted");
+        expectNotMatches("request failed", "\\b2xx\\b");
         expectNull(null);
         expectNotNull("puffin");
         expectEmpty(List.of());
@@ -43,6 +45,8 @@ System.exit(status);
 ```
 
 Each case runs independently. Failures show the case name, message, expected and actual values when available, and the first stack location outside PuffinTest. The runner returns `1` when a case fails or when no cases are provided.
+
+`expectMatches(actual, regex)` and `expectNotMatches(actual, regex)` search for a regex match anywhere in the text using Java regular-expression syntax.
 
 `expectErrorMessage(error, substring)` checks whether `Throwable.getMessage()` contains text; an exception with a null message is treated as having an empty message.
 

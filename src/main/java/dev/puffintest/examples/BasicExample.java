@@ -5,6 +5,8 @@ import java.util.List;
 
 import static dev.puffintest.PuffinTest.expectEqual;
 import static dev.puffintest.PuffinTest.expectTrue;
+import static dev.puffintest.PuffinTest.expectMatches;
+import static dev.puffintest.PuffinTest.expectNotMatches;
 import static dev.puffintest.PuffinTest.test;
 
 public final class BasicExample {
@@ -13,7 +15,11 @@ public final class BasicExample {
     public static void main(String[] args) {
         int status = PuffinTest.runTests(List.of(
                 test("formats a title", () -> expectEqual("Hello, Puffin", "Hello, Puffin")),
-                test("finds the item", () -> expectTrue(List.of("puffin", "tern").contains("puffin")))
+                test("finds the item", () -> {
+                    expectTrue(List.of("puffin", "tern").contains("puffin"));
+                    expectMatches("order-4821 accepted", "order-\\d+ accepted");
+                    expectNotMatches("request failed", "\\b2xx\\b");
+                })
         ));
         System.exit(status);
     }

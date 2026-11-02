@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /** Small named test cases and readable expectation failures. */
 public final class PuffinTest {
@@ -239,6 +240,24 @@ public final class PuffinTest {
         String actual = error.getMessage() == null ? "" : error.getMessage();
         if (!actual.contains(substring)) {
             throw new ExpectationFailure("Error message does not contain the expected text", "error message containing " + display(substring), actual, true);
+        }
+    }
+
+    /** Fail unless the regular expression matches somewhere in actual. */
+    public static void expectMatches(CharSequence actual, String regex) {
+        Objects.requireNonNull(actual, "actual");
+        Objects.requireNonNull(regex, "regex");
+        if (!Pattern.compile(regex).matcher(actual).find()) {
+            throw new ExpectationFailure("Text does not match the expected pattern", "text matching " + display(regex), actual, true);
+        }
+    }
+
+    /** Fail if the regular expression matches anywhere in actual. */
+    public static void expectNotMatches(CharSequence actual, String regex) {
+        Objects.requireNonNull(actual, "actual");
+        Objects.requireNonNull(regex, "regex");
+        if (Pattern.compile(regex).matcher(actual).find()) {
+            throw new ExpectationFailure("Text unexpectedly matches the pattern", "text not matching " + display(regex), actual, true);
         }
     }
 
